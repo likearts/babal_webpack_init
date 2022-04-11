@@ -8,6 +8,7 @@ const f = new Foo();
 console.log(f.foo());
 console.log(f.bar());
 console.log(config.env);
+console.log('API_SERVER', process.env.API_SERVER);
 
 const settime = () => {
     setTimeout( () => {
@@ -19,7 +20,7 @@ const test = () => {
     return new Promise( r => {
         setTimeout( () => {
             console.log('THEN')
-            r()
+            r(true)
         },6000)
     })
 }
@@ -27,6 +28,10 @@ const test = () => {
 const init = async () => {
     await test();
     settime();
+
+    if( await test() ) {
+        console.log('IF AWAIT PRINT: success' )
+    }
 }
 
 init();
