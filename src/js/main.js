@@ -1,5 +1,6 @@
 import { pi, power, Foo } from "./libs";
 import { config } from "./f/config";
+console.log('main');
 
 console.log(pi);
 console.log(power(pi, pi));
@@ -27,6 +28,7 @@ const test = () => {
 
 const init = async () => {
     await test();
+    console.log('test after');
     settime();
 
     if( await test() ) {

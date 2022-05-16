@@ -14,14 +14,35 @@ module.exports = (env)=> {
     return {
         // entry file - webpack이 실행될 파일
         // https://v4.webpack.js.org/configuration/entry/
-        entry: ["@babel/polyfill","core-js/stable","./src/js/main.js"],
+        entry: {
+            vendor: ["@babel/polyfill","core-js/stable","./src/js/main.js"],
+            main: [ './src/js/common/common.js','./src/js/main.js'],
+            pa: './src/page/page-a/js/page-a.js',
+            pb: './src/page/page-b/js/page-b.js',
+            pc: './src/page/page-c/js/page-c.js'
+        },
         // 번들링된 js 파일의 이름(filename)과 저장될 경로(path)를 지정
         // https://v4.webpack.js.org/configuration/output/
         output: {
             path: path.join(__dirname, "dist"),
-            filename: "bundle.js",
+            filename: "[name].js",
+            chunkFilename: '[name].bundle.js',
         },
-        // https://v4.webpack.js.org/configuration/module/
+        
+        optimization: {
+            runtimeChunk: 'single',
+            splitChunks: {
+                cacheGroups: {
+                    vendor: {
+                        test: /[\\/]node_modules[\\/]/,
+                        name: 'vendors',
+                        enforce: true,
+                        chunks: 'all'
+                    }
+                }
+            }
+        },
+        
         module: {
             rules: [
             {
@@ -67,16 +88,55 @@ module.exports = (env)=> {
             new CleanWebpackPlugin({
                 cleanAfterEveryBuildPatterns: ["dist", "public"],
             }),
+
             new HtmlWebpackPlugin({
-            template: "./src/index.html",     // 적용될 html 경로
-            filename: "./index.html", // 결과 파일명
-            meta: {
-                // meta 태그를 추가
-                viewport: "width=device-width, initial-scale=1, shrink-to-fit=no",
-            },
-            hash: true,       // 모든 스크립트, css 파일에 고유한 컴파일 해시 추가하여 캐시를 무효화
-            showErrors: true, // 오류 정보가 html에 기록됨
+                template: "./src/index.html",     // 적용될 html 경로
+                filename: "./public/index.html", // 결과 파일명
+                chunks: ['main'],
+                meta: {
+                    // meta 태그를 추가
+                    viewport: "width=device-width, initial-scale=1, shrink-to-fit=no",
+                },
+                hash: true,       // 모든 스크립트, css 파일에 고유한 컴파일 해시 추가하여 캐시를 무효화
+                showErrors: true, // 오류 정보가 html에 기록됨
             }),
+
+            new HtmlWebpackPlugin({
+                template: "./src/page/page-a/page-a.html",     // 적용될 html 경로
+                filename: "./public/pa/pa.html", // 결과 파일명
+                chunks: ['pa'],
+                meta: {
+                    // meta 태그를 추가
+                    viewport: "width=device-width, initial-scale=1, shrink-to-fit=no",
+                },
+                hash: true,       // 모든 스크립트, css 파일에 고유한 컴파일 해시 추가하여 캐시를 무효화
+                showErrors: true, // 오류 정보가 html에 기록됨
+            }),
+            
+            new HtmlWebpackPlugin({
+                template: "./src/page/page-b/page-b.html",     // 적용될 html 경로
+                filename: "./public/pb/pb.html", // 결과 파일명
+                chunks: ['pb'],
+                meta: {
+                    // meta 태그를 추가
+                    viewport: "width=device-width, initial-scale=1, shrink-to-fit=no",
+                },
+                hash: true,       // 모든 스크립트, css 파일에 고유한 컴파일 해시 추가하여 캐시를 무효화
+                showErrors: true, // 오류 정보가 html에 기록됨
+            }),
+
+            new HtmlWebpackPlugin({
+                template: "./src/page/page-c/page-c.html",     // 적용될 html 경로
+                filename: "./public/pc/pc.html", // 결과 파일명
+                chunks: ['pc'],
+                meta: {
+                    // meta 태그를 추가
+                    viewport: "width=device-width, initial-scale=1, shrink-to-fit=no",
+                },
+                hash: true,       // 모든 스크립트, css 파일에 고유한 컴파일 해시 추가하여 캐시를 무효화
+                showErrors: true, // 오류 정보가 html에 기록됨
+            }),
+        
         ],
 
         target: ["web", 'es5'],
